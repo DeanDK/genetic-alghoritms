@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class PopulationManager : MonoBehaviour {
 
@@ -30,6 +31,24 @@ public class PopulationManager : MonoBehaviour {
 			go.GetComponent<DNA>().b = Random.Range(0.0f, 1.0f);
 			population.Add (go);
 		}
+	}
+
+	void BreedNewPopulation(){
+		List<GameObject> newPopulation = new List<GameObject> ();
+		// fitted individuals are at the bottom of the sorted list
+		List<GameObject> sortedList = population.OrderBy (o => o.GetComponent<DNA> ().timeToDie).ToList ();
+		population.Clear ();
+
+		for (int i = (int)(sortedList.Count / 2.0f) - 1; i < sortedList.Count - 1; i++) {
+			population.Add (Breed (sortedList [i], sortedList [i + 1]));
+			population.Add (Breed (sortedList [i + 1], sortedList [i]));
+		}
+
+		for (int i = 0; i < sortedList.Count; i++) {
+			Destroy (sortedList [i]);
+		}
+
+		generation ++;
 	}
 	
 	// Update is called once per frame
