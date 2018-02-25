@@ -33,10 +33,24 @@ public class PopulationManager : MonoBehaviour {
 		}
 	}
 
+	GameObject Breed(GameObject parent1, GameObject parent2){
+		Vector3 pos = new Vector3 (Random.Range (-8.9f, 8.9f), Random.Range (-3.9f, 3.9f), 0);
+		GameObject offspring = Instantiate (personPrefab, pos, Quaternion.identity);
+		DNA dna1 = parent1.GetComponent<DNA> ();
+		DNA dna2 = parent2.GetComponent <DNA> ();
+
+		offspring.GetComponent<DNA> ().r = Random.Range (0, 10) < 5 ? dna1.r : dna2.r;
+		offspring.GetComponent<DNA> ().r = Random.Range (0, 10) < 5 ? dna1.g : dna2.g;
+		offspring.GetComponent<DNA> ().r = Random.Range (0, 10) < 5 ? dna1.b : dna2.b;
+		return offspring;
+	}
+	
+
 	void BreedNewPopulation(){
 		List<GameObject> newPopulation = new List<GameObject> ();
 		// fitted individuals are at the bottom of the sorted list
 		List<GameObject> sortedList = population.OrderBy (o => o.GetComponent<DNA> ().timeToDie).ToList ();
+
 		population.Clear ();
 
 		for (int i = (int)(sortedList.Count / 2.0f) - 1; i < sortedList.Count - 1; i++) {
